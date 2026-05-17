@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1 import auth, profile
 from app.core.config import settings
+
+API_V1_PREFIX = "/api/v1"
 
 app = FastAPI(
     title="CareerCompass API",
@@ -28,9 +31,9 @@ def root():
 
 @app.get("/health")
 def health():
-    """Lightweight liveness check. Render pings this; also used to wake the
-    free-tier dyno before demos."""
     return {"status": "ok"}
 
 
 # Day 2 will mount: app.include_router(auth_router, prefix="/api/v1/auth")
+app.include_router(auth.router, prefix=API_V1_PREFIX)
+app.include_router(profile.router, prefix=API_V1_PREFIX)
